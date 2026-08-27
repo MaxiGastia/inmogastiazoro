@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inmobiliaria Gastiazoro | Gestión Inmobiliaria Premium</title>
+    
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Desactivar el preflight de Tailwind para no romper tu CSS personalizado
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos base (CSS) - PALETA DE COLORES */
+        :root {
+            --primary-color: #7C1616;
+            --primary-light: #9A1F1F;
+            --secondary-color: #E6B325;
+            --bg-light: #fcfcfc;
+            --text-dark: #333;
+            --whatsapp-green: #25D366;
+        }
+
+        /* Ocultar cursor nativo */
+        body, a, button, select, input, label { cursor: none !important; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* --- CURSOR PERSONALIZADO --- */
+        .cursor-dot { width: 6px; height: 6px; background-color: var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+        .cursor-outline { width: 35px; height: 35px; border: 1px solid var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+
+        /* --- EFECTO REVELADO --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(80px);
+            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- NAVEGACIÓN Y DROPDOWN --- */
+        header { background-color: var(--primary-color); color: white; padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.3); border-bottom: 2px solid var(--secondary-color); }
+        .logo-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; transition: opacity 0.3s; }
+        .logo-link img { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary-color); }
+        .logo-container h1 { margin: 0; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; }
+        
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; align-items: center; }
+        nav a { color: white; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; transition: color 0.3s; }
+        nav a:hover { color: var(--secondary-color); }
+
+        /* Estilos del Dropdown (Submenú) */
+        .dropdown { position: relative; padding: 15px 0; margin: -15px 0; } /* Amplía el área para que el mouse no pierda el hover */
+        .dropdown-content { display: none; position: absolute; background-color: var(--primary-color); min-width: 190px; box-shadow: 0px 10px 25px rgba(0,0,0,0.4); z-index: 1000; top: 100%; left: -10px; border-radius: 0 0 6px 6px; border-top: 3px solid var(--secondary-color); flex-direction: column; overflow: hidden; }
+        .dropdown-content a { padding: 15px 20px; display: block; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; transition: background-color 0.3s, color 0.3s, padding-left 0.3s; margin: 0; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background-color: var(--primary-light); color: var(--secondary-color); padding-left: 25px; } /* Efecto al pasar el mouse por las opciones */
+        .dropdown:hover .dropdown-content { display: flex; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-consultar { background-color: var(--secondary-color); color: var(--primary-color); padding: 10px 20px; font-weight: 800; border-radius: 4px; border: none; text-transform: uppercase; font-size: 0.8rem; transition: background-color 0.3s;}
+        .btn-consultar:hover { background-color: white; cursor: none;}
+
+        /* --- HERO MINIMALISTA --- */
+        .hero { 
+            position: relative; 
+            background: linear-gradient(rgba(30, 5, 5, 0.75), rgba(30, 5, 5, 0.75)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80') center/cover; 
+            color: white; 
+            padding: 120px 5%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+            min-height: 85vh; 
+        }
+        
+        .hero-content { max-width: 900px; }
+        .hero-content h2 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 25px; font-weight: 300; }
+        .hero-content h2 strong { font-weight: 800; color: var(--secondary-color); display: block; }
+        .hero-content p { font-size: 1.2rem; color: #ecf0f1; margin-bottom: 50px; line-height: 1.8; }
+        
+        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background-color: var(--secondary-color); color: var(--primary-color); padding: 16px 40px; font-size: 0.95rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; text-decoration: none; transition: all 0.3s; }
+        .btn-primary:hover { background-color: white; }
+        .btn-outline { background-color: transparent; color: white; padding: 16px 40px; font-size: 0.95rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 2px solid white; border-radius: 4px; text-decoration: none; transition: all 0.3s; }
+        .btn-outline:hover { background-color: white; color: var(--primary-color); }
+
+        /* --- BARRA DE ESTADÍSTICAS --- */
+        .stats-banner { background-color: white; padding: 40px 5%; display: flex; justify-content: center; gap: 80px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; z-index: 10; margin-top: -60px; border-radius: 8px; max-width: 1000px; margin-left: auto; margin-right: auto; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-item h3 { font-size: 3rem; margin: 0; color: var(--primary-color); line-height: 1; }
+        .stat-item p { font-size: 0.85rem; color: #666; letter-spacing: 1px; margin: 10px 0 0 0; text-transform: uppercase; font-weight: bold; }
+
+        /* --- SECCIONES GENÉRICAS --- */
+        .seccion-generica { padding: 100px 5%; background: var(--bg-light); text-align: center; overflow: hidden; }
+        .seccion-generica.blanco { background: white; }
+        .seccion-titulo { font-size: 2.2rem; color: var(--primary-color); margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Nosotros */
+        .nosotros { display: flex; align-items: center; gap: 80px; text-align: left; }
+        .nosotros-texto { flex: 1; }
+        .nosotros-texto p { font-size: 1.1rem; line-height: 1.9; color: #555; margin-bottom: 25px;}
+        .nosotros-imagen { flex: 1; }
+        .nosotros-imagen img { width: 100%; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+        .btn-leer-mas { display: inline-block; padding: 12px 25px; background-color: var(--primary-color); color: white; text-decoration: none; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 0.85rem; transition: background-color 0.3s; }
+        .btn-leer-mas:hover { background-color: var(--primary-light); }
+
+        /* --- SERVICIOS --- */
+        .servicios-premium { position: relative; background: linear-gradient(rgba(124, 22, 22, 0.93), rgba(124, 22, 22, 0.93)), url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80') center/cover fixed; padding: 120px 5%; color: white; text-align: center; overflow: hidden; }
+        .servicios-premium h2 { color: white; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 80px; position: relative; z-index: 2; }
+        .grid-servicios-premium { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px; max-width: 1400px; margin: 0 auto; position: relative; z-index: 2; }
+        .servicio-card-premium { background: rgba(255, 255, 255, 1); padding: 60px 40px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: var(--text-dark); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        .servicio-card-premium:hover { transform: translateY(-15px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .servicio-card-premium::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 6px; background-color: var(--secondary-color); transform: scaleX(0); transition: transform 0.4s ease; transform-origin: left; }
+        .servicio-card-premium:hover::after { transform: scaleX(1); }
+        .servicio-icon { width: 80px; height: 80px; margin-bottom: 30px; color: var(--secondary-color); display: flex; justify-content: center; align-items: center; }
+        .servicio-icon svg { width: 100%; height: 100%; stroke-width: 1.2; }
+        .servicio-card-premium h3 { color: var(--primary-color); font-size: 1.6rem; margin-bottom: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .servicio-card-premium p { color: #555; line-height: 1.8; font-size: 1.05rem; margin: 0; }
+
+        /* --- BOTONES FLOTANTES REDES SOCIALES --- */
+        .social-sidebar { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+        .social-icon { width: 42px; height: 42px; background-color: var(--primary-light); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1); }
+        .social-icon:hover { transform: translateX(8px); background-color: var(--secondary-color); color: var(--primary-color); }
+        
+        /* Botón WhatsApp */
+        .whatsapp-float { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background-color: var(--whatsapp-green); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.3); z-index: 1000; transition: transform 0.3s; }
+        .whatsapp-float svg { width: 38px; height: 38px; fill: white; }
+
+        /* Footer */
+        footer { background-color: var(--primary-color); color: white; padding: 80px 5% 40px 5%; border-top: 4px solid var(--secondary-color); text-align: left;}
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto 60px auto; }
+        .footer-column h4 { color: white; text-transform: uppercase; margin-bottom: 25px; font-size: 1rem; letter-spacing: 1px; display: flex; align-items: center; gap: 15px;}
+        .footer-column h4 img { width: 45px; border-radius: 50%; border: 2px solid var(--secondary-color); }
+        .footer-column p, .footer-column li { font-size: 0.95rem; color: #ccc; line-height: 1.8; margin-bottom: 12px; }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li a { color: #ccc; text-decoration: none; transition: color 0.3s; }
+        .footer-column ul li a:hover { color: var(--secondary-color); padding-left: 5px;}
+        .copyright-bar { padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 0.85rem; color: rgba(255,255,255,0.5); max-width: 1200px; margin: 0 auto; }
+
+        @media (max-width: 1024px) {
+            .hero-content h2 { font-size: 3rem; }
+            .stats-banner { flex-direction: column; gap: 30px; margin-top: 0; border-radius: 0; }
+            .nosotros { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .footer-column h4 { justify-content: center; }
+            nav ul, .social-sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="social-sidebar">
+        <a href="https://www.instagram.com/inmogastiazoro/" target="_blank" class="social-icon" title="Instagram">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+        </a>
+        <a href="https://www.tiktok.com/@maxgastiazoro" target="_blank" class="social-icon" title="TikTok">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+            </svg>
+        </a>
+    </div>
+
+    <a href="https://wa.me/5493512315208" class="whatsapp-float" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.89 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.743-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.01-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    </a>
+
+    <header>
+        <div class="logo-container">
+            <a href="#inicio" class="logo-link">
+                <img src="logo.jpg" alt="Logo Inmobiliaria Gastiazoro">
+                <h1>INMOBILIARIA GASTIAZORO</h1>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li class="dropdown">
+                    <a href="#inicio" style="display: flex; align-items: center; gap: 4px;">
+                        Inicio
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="#servicios">Servicios</a>
+                        <a href="#calculadora">Calculadora</a>
+                    </div>
+                </li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="https://clasificados.lavoz.com.ar/sitio/inmogastiazoro" target="_blank">Propiedades</a></li>
+                <li><a href="faq.html">FAQs</a></li>
+                <li><a href="https://wa.me/5493512315208" target="_blank"><button class="btn-consultar">Contactanos</button></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="hero-content reveal">
+                <h2>La mejor calidad <strong>en cada ladrillo</strong></h2>
+                <p>Más de tres décadas liderando el mercado inmobiliario cordobés. Simplificamos tu búsqueda con gestión profesional y transparente.</p>
+                <div class="hero-buttons">
+                    <a href="https://clasificados.lavoz.com.ar/sitio/inmogastiazoro" target="_blank" class="btn-primary">Ver Catálogo Completo</a>
+                    <a href="https://wa.me/5493512315208?text=Hola%20Inmobiliaria%20Gastiazoro.%20Me%20contacto%20desde%20la%20web%20porque%20me%20interesar%C3%ADa%20tasar%20mi%20inmueble." class="btn-outline" target="_blank">Tasar mi inmueble</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="stats-banner reveal">
+            <div class="stat-item">
+                <h3>+<span class="counter" data-target="30">0</span></h3>
+                <p>Años de Trayectoria</p>
+            </div>
+            <div class="stat-item">
+                <h3>N°1</h3>
+                <p>Gestión de Alquileres</p>
+            </div>
+            <div class="stat-item">
+                <h3><span class="counter" data-target="5641">0</span></h3>
+                <p>más de<br>Propiedades Alquiladas</p>
+            </div>
+        </div>
+
+        <section class="seccion-generica blanco nosotros" style="border-top: 1px solid #eee;">
+            <div class="nosotros-texto reveal">
+                <h2 class="seccion-titulo" style="margin-bottom:20px; text-align: left;">Nuestra Historia</h2>
+                <p>La excelencia en el mercado inmobiliario requiere de una profesionalización constante y un conocimiento profundo del mercado local.</p>
+                <a href="nosotros.html" class="btn-leer-mas">Conocer nuestra historia completa</a>
+            </div>
+            <div class="nosotros-imagen reveal" style="transition-delay: 0.2s;">
+                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80" alt="Oficina">
+            </div>
+        </section>
+
+        <section id="servicios" class="servicios-premium">
+            <h2 class="seccion-titulo reveal">Servicios Integrales Profesionales</h2>
+            
+            <div class="grid-servicios-premium">
+                <div class="servicio-card-premium reveal" style="transition-delay: 0s;">
+                    <div class="servicio-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><path d="M12 22a7.5 7.5 0 0 0 7.5-7.5" stroke-dasharray="2 2"></path><path d="M12 22a7.5 7.5 0 0 1-7.5-7.5" stroke-dasharray="2 2"></path><path d="M16.5 13.5l3-3 1.5 1.5L18 15" stroke-width="1"></path></svg>
+                    </div>
+                    <h3>Venta de Propiedades</h3>
+                    <p>Estrategias de marketing de vanguardia para vender su inmueble al mejor precio y en tiempo récord.</p>
+                </div>
+
+                <div class="servicio-card-premium reveal" style="transition-delay: 0.1s;">
+                    <div class="servicio-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 3h5v5M8 3H3v5M3 16v5h5M16 21h5v-5"></path><path d="M11.62 16.83a4 4 0 0 1-5.66 0l-3.37-3.37a4 4 0 0 1 0-5.66l0 0a4 4 0 0 1 5.66 0l3.37 3.37" stroke-dasharray="1 1"></path><path d="M12.38 7.17a4 4 0 0 1 5.66 0l3.37 3.37a4 4 0 0 1 0 5.66l0 0a4 4 0 0 1-5.66 0l-3.37-3.37"></path><path d="M14.5 9.5l-5 5"></path></svg>
+                    </div>
+                    <h3>Administración de Alquileres</h3>
+                    <p>Gestión integral, cobro garantizado y selección rigurosa de inquilinos para su total tranquilidad.</p>
+                </div>
+
+                <div class="servicio-card-premium reveal" style="transition-delay: 0.2s;">
+                    <div class="servicio-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path><path d="M3 12h18"></path><path d="M12 3v18"></path><path d="M16.5 16.5l3 3m0-3l-3 3" stroke-width="1.5"></path></svg>
+                    </div>
+                    <h3>Tasaciones Profesionales</h3>
+                    <p>Valuaciones técnicas y precisas basadas en la realidad actual del mercado cordobés.</p>
+                </div>
+
+                <div class="servicio-card-premium reveal" style="transition-delay: 0.3s;">
+                    <div class="servicio-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9H8"></path><path d="M16 13l-2.5 2.5a1.8 1.8 0 0 1-2.5 0l-1-1" stroke-width="1"></path></svg>
+                    </div>
+                    <h3>Asesoramiento Legal</h3>
+                    <p>Respaldo jurídico especializado en contratos, boleto de compraventa y normativas inmobiliarias.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculadora" class="py-16 bg-[#fcfcfc] font-sans">
+            <div class="max-w-6xl w-full mx-auto px-4">
+                
+                <div class="bg-white rounded-xl shadow-2xl overflow-hidden reveal">
+                    
+                    <div class="bg-[#0f172a] p-8 flex flex-col items-center justify-center text-center">
+                        <img src="logo.jpg" alt="Logo Inmobiliaria Gastiazoro" class="w-20 h-20 object-cover rounded-full border-2 border-slate-600 shadow-xl mb-4 bg-white" style="image-rendering: crisp-edges;">
+                        <h2 class="text-3xl font-bold text-white tracking-wide mb-2" style="margin: 0;">Simulador de Inversiones Interactivo</h2>
+                        <p class="text-slate-400 text-sm tracking-widest uppercase font-bold" style="margin: 0;">Inmobiliaria Gastiazoro</p>
+                    </div>
+
+                    <div class="p-8">
+                        <p class="text-center text-slate-500 mb-8 mt-2" style="font-size: 1.1rem; color: #64748b;">Deslizá los controles para ajustar los valores y ver cómo impactan en tu rentabilidad en tiempo real.</p>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            
+                            <div class="lg:col-span-4 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                <h3 class="text-xl font-bold text-[#751A1E] mb-6" style="color: #751A1E;">1. Datos de la Propiedad</h3>
+                                
+                                <div class="space-y-6 mb-8">
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-sm">Precio Compra (USD)</label>
+                                            <input type="number" id="precio" class="w-24 p-1 text-right border border-slate-300 rounded text-sm font-bold text-slate-800 focus:outline-none focus:border-[#DDA73A]" value="65000" oninput="sincronizar('precio', 'precio-slider')">
+                                        </div>
+                                        <input type="range" id="precio-slider" min="10000" max="300000" step="1000" value="65000" class="w-full accent-[#DDA73A] h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('precio-slider', 'precio')">
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-sm">Refacciones (USD)</label>
+                                            <input type="number" id="refaccion" class="w-24 p-1 text-right border border-slate-300 rounded text-sm font-bold text-slate-800 focus:outline-none focus:border-[#DDA73A]" value="0" oninput="sincronizar('refaccion', 'refaccion-slider')">
+                                        </div>
+                                        <input type="range" id="refaccion-slider" min="0" max="50000" step="500" value="0" class="w-full accent-[#DDA73A] h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('refaccion-slider', 'refaccion')">
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-sm">Renta Mensual (USD)</label>
+                                            <input type="number" id="renta" class="w-24 p-1 text-right border border-slate-300 rounded text-sm font-bold text-slate-800 focus:outline-none focus:border-[#DDA73A]" value="633" oninput="sincronizar('renta', 'renta-slider')">
+                                        </div>
+                                        <input type="range" id="renta-slider" min="100" max="3000" step="10" value="633" class="w-full accent-[#DDA73A] h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('renta-slider', 'renta')">
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-sm">Plusvalía Anual (%)</label>
+                                            <input type="number" id="plusvalia" class="w-24 p-1 text-right border border-slate-300 rounded text-sm font-bold text-slate-800 focus:outline-none focus:border-[#DDA73A]" value="1" oninput="sincronizar('plusvalia', 'plusvalia-slider')">
+                                        </div>
+                                        <input type="range" id="plusvalia-slider" min="0" max="15" step="0.5" value="1" class="w-full accent-[#DDA73A] h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('plusvalia-slider', 'plusvalia')">
+                                    </div>
+                                </div>
+
+                                <h3 class="text-xl font-bold text-slate-700 mb-6 mt-10">2. Gastos y Riesgos</h3>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-xs">Expensas/Adm (USD)</label>
+                                            <input type="number" id="expensas" class="w-24 p-1 text-right border border-slate-300 rounded text-xs font-bold text-slate-800 focus:outline-none focus:border-slate-400" value="80" oninput="sincronizar('expensas', 'expensas-slider')">
+                                        </div>
+                                        <input type="range" id="expensas-slider" min="0" max="500" step="5" value="80" class="w-full accent-slate-300 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('expensas-slider', 'expensas')">
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-xs">Impuestos/Mes (USD)</label>
+                                            <input type="number" id="impuestos" class="w-24 p-1 text-right border border-slate-300 rounded text-xs font-bold text-slate-800 focus:outline-none focus:border-slate-400" value="0" oninput="sincronizar('impuestos', 'impuestos-slider')">
+                                        </div>
+                                        <input type="range" id="impuestos-slider" min="0" max="300" step="5" value="0" class="w-full accent-slate-300 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('impuestos-slider', 'impuestos')">
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between items-end mb-2">
+                                            <label class="text-slate-700 font-semibold text-xs">Vacancia (%)</label>
+                                            <input type="number" id="vacancia" class="w-24 p-1 text-right border border-slate-300 rounded text-xs font-bold text-slate-800 focus:outline-none focus:border-slate-400" value="0" oninput="sincronizar('vacancia', 'vacancia-slider')">
+                                        </div>
+                                        <input type="range" id="vacancia-slider" min="0" max="25" step="1" value="0" class="w-full accent-slate-300 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="sincronizar('vacancia-slider', 'vacancia')">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="resultados" class="lg:col-span-8 flex flex-col gap-6">
+                                
+                                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                    <div>
+                                        <h2 class="text-2xl font-bold text-slate-800 mb-1" style="color: #1e293b; margin:0;">📊 Reporte Financiero</h2>
+                                        <p class="text-xs text-slate-400 mt-1">Actualización en tiempo real</p>
+                                    </div>
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center w-full md:w-auto">
+                                        <div class="bg-slate-100 p-3 rounded-lg transition-all duration-300">
+                                            <p class="text-[10px] text-slate-600 uppercase font-bold mb-2">Inversión Total</p>
+                                            <p class="font-bold text-slate-800 text-lg" id="res-inversion">$0</p>
+                                        </div>
+                                        <div class="bg-[#fef3c7] p-3 rounded-lg transition-all duration-300">
+                                            <p class="text-[10px] text-[#92400e] uppercase font-bold mb-2">Flujo Anual</p>
+                                            <p class="font-bold text-[#92400e] text-lg" id="res-ingreso">$0</p>
+                                        </div>
+                                        <div class="bg-[#f2e8e9] p-3 rounded-lg transition-all duration-300">
+                                            <p class="text-[10px] text-[#751A1E] uppercase font-bold mb-2">Cap Rate Neto</p>
+                                            <p class="font-bold text-[#751A1E] text-lg" id="res-caprate">0%</p>
+                                        </div>
+                                        <div class="bg-slate-100 p-3 rounded-lg transition-all duration-300">
+                                            <p class="text-[10px] text-slate-600 uppercase font-bold mb-2">Recuperación</p>
+                                            <p class="font-bold text-slate-800 text-lg" id="res-payback">0 años</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="md:col-span-1 bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center items-center">
+                                        <h3 class="text-sm font-bold text-slate-600 uppercase tracking-wide mb-6 text-center">Distribución Año 1</h3>
+                                        <canvas id="graficoDona" class="w-full max-w-[200px]"></canvas> 
+                                    </div>
+
+                                    <div class="md:col-span-2 bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col">
+                                        <h3 class="text-sm font-bold text-slate-600 uppercase tracking-wide mb-6 text-center">Proyección de Patrimonio a 10 Años</h3>
+                                        <div class="relative h-64 w-full flex-grow">
+                                            <canvas id="graficoProyeccion"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid reveal">
+            <div class="footer-column">
+                <h4>
+                    <img src="logo.jpg" alt="Logo">
+                    INMOBILIARIA GASTIAZORO
+                </h4>
+                <p>Especialistas en alquileres y administración profesional de inmuebles en la ciudad de Córdoba.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="https://clasificados.lavoz.com.ar/sitio/inmogastiazoro" target="_blank">Propiedades</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="https://wa.me/5493512315208?text=Hola%20Inmobiliaria%20Gastiazoro.%20Me%20contacto%20desde%20la%20web%20porque%20me%20interesar%C3%ADa%20tasar%20mi%20inmueble." target="_blank">Tasaciones</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Redes</h4>
+                <ul>
+                    <li><a href="https://www.instagram.com/inmogastiazoro/" target="_blank">Instagram</a></li>
+                    <li><a href="https://www.tiktok.com/@maxgastiazoro" target="_blank">TikTok</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Contacto</h4>
+                <p style="margin-bottom: 5px;">San Martin 73 1° Piso, Córdoba</p>
+                <p style="margin-bottom: 5px;">+54 9 351 2315208</p>
+                <p>maxigastia@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright-bar reveal">
+            &copy; 2026 Inmobiliaria Gastiazoro. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Lenis - Scroll Suave
+        const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // Conectar los links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                // Solo prevenir si es un anchor interno normal y no parte del dropdown para no bloquear comportamientos raros
+                if(this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    lenis.scrollTo(this.getAttribute('href'), { offset: -80 });
+                }
+            });
+        });
+
+        // Cursor
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+            outline.animate({ left: e.clientX + 'px', top: e.clientY + 'px' }, { duration: 400, fill: "forwards" });
+        });
+
+        // Intersection Observer (Animaciones de revelado y contadores)
+        document.addEventListener("DOMContentLoaded", function() {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); } });
+            }, { threshold: 0.1 });
+            document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
+            // LÓGICA DE CONTADORES ANIMADOS
+            const statsBanner = document.querySelector('.stats-banner');
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200; 
+
+            const startCounters = () => {
+                counters.forEach(counter => {
+                    const animate = () => {
+                        const target = +counter.getAttribute('data-target');
+                        const count = +counter.innerText;
+                        const inc = Math.ceil(target / speed);
+
+                        if (count < target) {
+                            counter.innerText = count + inc;
+                            setTimeout(animate, 10); 
+                        } else {
+                            counter.innerText = target; 
+                        }
+                    }
+                    animate();
+                });
+            };
+
+            const statsObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        startCounters();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.6 });
+
+            if(statsBanner) statsObserver.observe(statsBanner);
+
+            // INICIALIZACIÓN DE CALCULADORA
+            calcularROI();
+        });
+
+        // --- LÓGICA DE LA CALCULADORA DE INVERSIONES ---
+        let chartDona = null; 
+        let chartProyeccion = null;
+
+        function sincronizar(idOrigen, idDestino) {
+            document.getElementById(idDestino).value = document.getElementById(idOrigen).value;
+            calcularROI();
+        }
+
+        function calcularROI() {
+            const precio = parseFloat(document.getElementById('precio').value) || 0;
+            const refaccion = parseFloat(document.getElementById('refaccion').value) || 0;
+            const renta = parseFloat(document.getElementById('renta').value) || 0;
+            const plusvalia = parseFloat(document.getElementById('plusvalia').value) || 0;
+            const expensas = parseFloat(document.getElementById('expensas').value) || 0;
+            const impuestos = parseFloat(document.getElementById('impuestos').value) || 0;
+            const vacanciaPct = parseFloat(document.getElementById('vacancia').value) || 0;
+
+            if (precio <= 0) return;
+
+            const inversionTotal = precio + refaccion; 
+            const ingresoBruto = renta * 12;
+            const gastosOp = (expensas + impuestos) * 12;
+            const perdidaVacancia = ingresoBruto * (vacanciaPct / 100);
+            
+            const ingresoNeto = ingresoBruto - gastosOp - perdidaVacancia;
+            const capRate = (ingresoNeto / inversionTotal) * 100;
+            
+            let payback = 0;
+            if (ingresoNeto > 0) {
+                payback = inversionTotal / ingresoNeto;
+            }
+
+            const labelsProyeccion = [];
+            const dataValorPropiedad = [];
+            const dataPatrimonioTotal = [];
+            const dataInversionLine = []; 
+            let patrimonioAcumulado = ingresoNeto > 0 ? ingresoNeto : 0; 
+
+            for (let anio = 1; anio <= 10; anio++) {
+                labelsProyeccion.push(`Año ${anio}`);
+                dataInversionLine.push(inversionTotal); 
+                
+                const valorPropiedad = precio * Math.pow((1 + (plusvalia / 100)), anio);
+                dataValorPropiedad.push(Math.round(valorPropiedad));
+                
+                if (anio > 1 && ingresoNeto > 0) {
+                    const ingresoNetoAnio = ingresoNeto * Math.pow((1 + (plusvalia / 100)), anio - 1);
+                    patrimonioAcumulado += ingresoNetoAnio;
+                }
+                dataPatrimonioTotal.push(Math.round(valorPropiedad + patrimonioAcumulado));
+            }
+
+            const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+            
+            document.getElementById('res-inversion').innerText = formato.format(inversionTotal);
+            document.getElementById('res-ingreso').innerText = formato.format(ingresoNeto);
+            document.getElementById('res-caprate').innerText = capRate.toFixed(2) + "%";
+            document.getElementById('res-payback').innerText = payback > 0 ? payback.toFixed(1) + " años" : "N/A";
+
+            const ctxDona = document.getElementById('graficoDona').getContext('2d');
+            if (chartDona) chartDona.destroy();
+            chartDona = new Chart(ctxDona, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ganancia', 'Gastos', 'Vacancia'],
+                    datasets: [{
+                        data: ingresoBruto > 0 ? [ingresoNeto, gastosOp, perdidaVacancia] : [1],
+                        backgroundColor: ingresoBruto > 0 ? ['#DDA73A', '#751A1E', '#64748b'] : ['#e2e8f0'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: { duration: 400 }, 
+                    plugins: { legend: { display: false }, tooltip: { enabled: ingresoBruto > 0 } }, 
+                }
+            });
+
+            const ctxProyeccion = document.getElementById('graficoProyeccion').getContext('2d');
+            if (chartProyeccion) chartProyeccion.destroy();
+            chartProyeccion = new Chart(ctxProyeccion, {
+                type: 'line',
+                data: {
+                    labels: labelsProyeccion,
+                    datasets: [
+                        {
+                            label: 'Inversión Inicial',
+                            data: dataInversionLine,
+                            borderColor: '#94a3b8', 
+                            borderDash: [5, 5], 
+                            fill: false,
+                            borderWidth: 2,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Patrimonio Total (Valor + Renta)',
+                            data: dataPatrimonioTotal,
+                            borderColor: '#751A1E',
+                            backgroundColor: 'rgba(117, 26, 30, 0.1)', 
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 2
+                        },
+                        {
+                            label: 'Valor Propiedad (Plusvalía)',
+                            data: dataValorPropiedad,
+                            borderColor: '#DDA73A', 
+                            borderDash: [5, 5], 
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 0 }, 
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.dataset.label + ': ' + formato.format(context.raw); }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { callback: function(value) { return formato.format(value); }, font: { size: 9 } } },
+                        x: { font: { size: 9 } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

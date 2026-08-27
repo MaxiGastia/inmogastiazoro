@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros | Inmobiliaria Gastiazoro</title>
+    <style>
+        :root {
+            --primary-color: #7C1616;
+            --primary-light: #9A1F1F;
+            --secondary-color: #E6B325;
+            --bg-light: #fcfcfc;
+            --text-dark: #333;
+            --whatsapp-green: #25D366;
+        }
+
+        body, a, button, select, input, label { cursor: none !important; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; color: var(--text-dark); background-color: var(--bg-light); overflow-x: hidden; }
+
+        /* Cursor Personalizado */
+        .cursor-dot { width: 6px; height: 6px; background-color: var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+        .cursor-outline { width: 35px; height: 35px; border: 1px solid var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+
+        /* --- EFECTO REVELADO SCROLL SUAVE --- */
+        .reveal { opacity: 0; transform: translateY(80px); transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Navegación */
+        header { background-color: var(--primary-color); color: white; padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.3); border-bottom: 2px solid var(--secondary-color); }
+        .logo-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; }
+        .logo-link img { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary-color); }
+        .logo-container h1 { margin: 0; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; align-items: center; }
+        nav a { color: white; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        nav a:hover { color: var(--secondary-color); }
+
+        /* Estilo para el botón amarillo Contactanos */
+        .btn-consultar { background-color: var(--secondary-color); color: var(--primary-color); padding: 10px 20px; font-weight: 800; border-radius: 4px; border: none; text-transform: uppercase; font-size: 0.8rem; cursor: none !important; transition: background-color 0.3s; }
+        .btn-consultar:hover { background-color: white; }
+
+        /* --- PÁGINA NOSOTROS (PORTADA ACHICADA) --- */
+        .nosotros-hero { background: linear-gradient(rgba(45, 10, 10, 0.8), rgba(45, 10, 10, 0.8)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80') center/cover; padding: 50px 5%; text-align: center; color: white; border-bottom: 5px solid var(--secondary-color); }
+        .nosotros-hero h2 { font-size: 3rem; margin-bottom: 15px; color: var(--secondary-color); text-transform: uppercase; letter-spacing: 2px;}
+
+        /* --- MIGAS DE PAN (BREADCRUMBS) --- */
+        .breadcrumb { padding: 40px 5% 0 5%; font-size: 0.95rem; color: #777; max-width: 1200px; margin: 0 auto; text-align: left;}
+        .breadcrumb a { color: #777; text-decoration: none; transition: color 0.3s; }
+        .breadcrumb a:hover { color: var(--primary-color); }
+        .breadcrumb span { color: #111; font-weight: 600; }
+
+        /* --- SECCIÓN EQUIPO --- */
+        .equipo-section { padding: 60px 5% 100px 5%; background-color: var(--bg-light); text-align: center; }
+        .equipo-titulo { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 60px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .equipo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        
+        .miembro-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.4s ease; border: 1px solid transparent; }
+        .miembro-card:hover { transform: translateY(-10px); border-color: var(--secondary-color); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        .miembro-foto { width: 180px; height: 180px; border-radius: 50%; object-fit: cover; margin-bottom: 25px; border: 3px solid var(--secondary-color); padding: 5px; background: white; transition: transform 0.4s ease; }
+        .miembro-card:hover .miembro-foto { transform: scale(1.05); }
+        
+        .miembro-nombre { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 8px; font-weight: 800; }
+        .miembro-cargo { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1.5px; font-weight: bold; display: block; margin-bottom: 15px; }
+        .miembro-descripcion { font-size: 0.95rem; color: #666; line-height: 1.6; }
+
+        /* --- HISTORIA --- */
+        .historia-container { max-width: 1100px; margin: 80px auto; padding: 0 5%; }
+        .historia-bloque { display: flex; align-items: center; gap: 60px; margin-bottom: 80px; }
+        .historia-bloque.inverso { flex-direction: row-reverse; }
+        .texto-bloque { flex: 1.2; }
+        .texto-bloque h3 { font-size: 2.2rem; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase; }
+        .texto-bloque p { font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 15px; }
+        .imagen-bloque { flex: 1; }
+        .imagen-bloque img { width: 100%; border-radius: 8px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+
+        /* --- MISIÓN, VISIÓN Y VALORES --- */
+        .mvv-section { padding: 100px 5%; background-color: white; text-align: center; border-top: 1px solid #eee;}
+        .mvv-titulo { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 60px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .mvv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        
+        .mvv-card { background: var(--bg-light); padding: 50px 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border-top: 5px solid var(--secondary-color); transition: transform 0.3s ease; }
+        .mvv-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .mvv-card h3 { color: var(--primary-color); font-size: 1.8rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .mvv-card p { color: #555; line-height: 1.8; font-size: 1.05rem; margin: 0; }
+
+        /* --- FOOTER ESTILO BRIONES --- */
+        footer { background-color: var(--primary-color); color: white; padding: 80px 5% 40px 5%; border-top: 4px solid var(--secondary-color); text-align: left;}
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto 60px auto; }
+        .footer-column h4 { color: white; text-transform: uppercase; margin-bottom: 25px; font-size: 1rem; letter-spacing: 1px; display: flex; align-items: center; gap: 15px;}
+        .footer-column h4 img { width: 45px; border-radius: 50%; border: 2px solid var(--secondary-color); }
+        .footer-column p, .footer-column li { font-size: 0.95rem; color: #ccc; line-height: 1.8; margin-bottom: 12px; }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li a { color: #ccc; text-decoration: none; transition: color 0.3s; }
+        .footer-column ul li a:hover { color: var(--secondary-color); padding-left: 5px;}
+        .copyright-bar { padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 0.85rem; color: rgba(255,255,255,0.5); max-width: 1200px; margin: 0 auto; }
+
+        @media (max-width: 900px) {
+            .historia-bloque, .historia-bloque.inverso { flex-direction: column; gap: 30px; text-align: center; }
+            nav ul { display: none; }
+            .equipo-grid, .mvv-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .footer-column h4 { justify-content: center; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header>
+        <div class="logo-container">
+            <a href="index.html" class="logo-link">
+                <img src="logo.jpg" alt="Logo Inmobiliaria">
+                <h1>INMOBILIARIA GASTIAZORO</h1>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="nosotros.html" style="color: var(--secondary-color);">Nosotros</a></li>
+                <li><a href="https://clasificados.lavoz.com.ar/sitio/inmogastiazoro" target="_blank">Propiedades</a></li>
+                <li><a href="faq.html">FAQs</a></li>
+                <li><a href="https://wa.me/5493512315208" target="_blank"><button class="btn-consultar">Contactanos</button></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="nosotros-hero reveal">
+            <h2>Nuestra Historia</h2>
+            <p>Desde hace 30 años, transformando el mercado inmobiliario con transparencia y profesionalismo.</p>
+        </section>
+
+        <div class="breadcrumb reveal" style="transition-delay: 0s;">
+            <a href="index.html">Inicio</a> &gt; <span>Nosotros</span>
+        </div>
+
+        <section class="equipo-section">
+            <h2 class="equipo-titulo reveal">El equipo detrás de cada proyecto</h2>
+            <div class="equipo-grid">
+                
+                <div class="miembro-card reveal" style="transition-delay: 0s;">
+                    <img src="Maximo.jpeg" alt="Maximo Gastiazoro" class="miembro-foto">
+                    <h3 class="miembro-nombre">Maximo Gastiazoro</h3>
+                    <span class="miembro-cargo">Director Area de Ventas y Marketing</span>
+                    <p class="miembro-descripcion">Líder en ventas y especialista en marketing inmobiliario digital. Combina la visión estratégica de la firma con campañas de alto impacto para maximizar los resultados de cada propiedad.</p>
+                </div>
+
+                <div class="miembro-card reveal" style="transition-delay: 0.2s;">
+                    <img src="Fg.jpeg" alt="Francisco Gastiazoro" class="miembro-foto">
+                    <h3 class="miembro-nombre">Francisco Gastiazoro</h3>
+                    <span class="miembro-cargo">Administración General</span>
+                    <p class="miembro-descripcion">Contador Público y Corredor Inmobiliario. Lidera la gestión operativa combinando el rigor contable con el conocimiento técnico del sector para garantizar procesos transparentes y eficientes.</p>
+                </div>
+
+                <div class="miembro-card reveal" style="transition-delay: 0.4s;">
+                    <img src="Rodolfo.jpeg" alt="Rodolfo Gastiazoro" class="miembro-foto">
+                    <h3 class="miembro-nombre">Rodolfo Gastiazoro</h3>
+                    <span class="miembro-cargo">Administración General</span>
+                    <p class="miembro-descripcion">Arquitecto. Aporta una visión técnica fundamental en la administración de inmuebles, permitiendo evaluar la funcionalidad y el potencial constructivo de cada propiedad con criterio profesional.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="historia-container">
+            <div class="historia-bloque">
+                <div class="texto-bloque reveal">
+                    <h3>Tres décadas de trayectoria</h3>
+                    <p>Inmobiliaria Gastiazoro nace de una visión: profesionalizar el servicio inmobiliario en Córdoba. Durante estos 30 años, hemos atravesado todos los ciclos del mercado, lo que nos otorga una perspectiva única para asesorar a nuestros clientes.</p>
+                    <p>No solo vendemos o alquilamos propiedades; gestionamos el patrimonio de familias y empresas con la responsabilidad absoluta que eso conlleva.</p>
+                </div>
+                <div class="imagen-bloque reveal" style="transition-delay: 0.2s;">
+                    <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?auto=format&fit=crop&q=80" alt="Trayectoria">
+                </div>
+            </div>
+        </section>
+
+        <section class="mvv-section">
+            <h2 class="mvv-titulo reveal">Nuestra Filosofía</h2>
+            <div class="mvv-grid">
+                
+                <div class="mvv-card reveal" style="transition-delay: 0s;">
+                    <h3>Misión</h3>
+                    <p>Brindar soluciones inmobiliarias integrales y seguras. Gestionamos el patrimonio de nuestros clientes con absoluta transparencia, asegurando rentabilidad para el propietario y tranquilidad para el inquilino en cada etapa de la operación.</p>
+                </div>
+
+                <div class="mvv-card reveal" style="transition-delay: 0.2s;">
+                    <h3>Visión</h3>
+                    <p>Ser la inmobiliaria de referencia en Córdoba, destacándonos por nuestra innovación, calidad de servicio y por elevar los estándares de profesionalismo en la administración y el corretaje inmobiliario.</p>
+                </div>
+
+                <div class="mvv-card reveal" style="transition-delay: 0.4s;">
+                    <h3>Valores</h3>
+                    <p>La mejor calidad en cada ladrillo. Nos rigen la honestidad intachable, el compromiso, la seguridad jurídica y la formación constante para brindar siempre un asesoramiento de excelencia.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contacto">
+        <div class="footer-grid reveal">
+            <div class="footer-column">
+                <h4>
+                    <img src="logo.jpg" alt="Logo">
+                    GRUPO GASTIAZORO
+                </h4>
+                <p>Especialistas en alquileres y administración profesional de inmuebles en la ciudad de Córdoba.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="https://clasificados.lavoz.com.ar/sitio/inmogastiazoro" target="_blank">Propiedades</a></li>
+                    <li><a href="index.html#servicios">Servicios</a></li>
+                    <li><a href="index.html#tasaciones">Tasaciones</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Redes</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Contacto</h4>
+                <p style="margin-bottom: 5px;">San Martin 73 1° Piso, Córdoba</p>
+                <p style="margin-bottom: 5px;">+54 9 351 2315208</p>
+                <p>maxigastia@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright-bar reveal">
+            &copy; 2026 Inmobiliaria Gastiazoro. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Lenis - Scroll Suave
+        const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // Cursor
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+            outline.animate({ left: e.clientX + 'px', top: e.clientY + 'px' }, { duration: 400, fill: "forwards" });
+        });
+
+        // Intersection Observer (Animaciones)
+        document.addEventListener("DOMContentLoaded", function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); } });
+            }, { threshold: 0.1 });
+            document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>

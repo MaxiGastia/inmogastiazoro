@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Propiedad | Inmobiliaria Gastiazoro</title>
+    <style>
+        :root { --primary-color: #7C1616; --primary-light: #9A1F1F; --secondary-color: #E6B325; --bg-light: #fcfcfc; --text-dark: #333; --whatsapp-green: #25D366; }
+        body, a, button, select, input, label, textarea { cursor: none !important; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; color: var(--text-dark); background-color: var(--bg-light); overflow-x: hidden; }
+
+        .cursor-dot { width: 6px; height: 6px; background-color: var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+        .cursor-outline { width: 35px; height: 35px; border: 1px solid var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+
+        .reveal { opacity: 0; transform: translateY(100px); transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        header { background-color: var(--primary-color); color: white; padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.3); border-bottom: 2px solid var(--secondary-color); }
+        .logo-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; }
+        .logo-link img { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary-color); }
+        .logo-container h1 { margin: 0; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        .main-container { max-width: 1200px; margin: 40px auto; padding: 0 5%; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; overflow: hidden;}
+        .image-gallery { width: 100%; height: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .image-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .property-header h2 { font-size: 2.2rem; color: var(--primary-color); margin-bottom: 10px; }
+        .location { color: #666; font-size: 1.1rem; margin-bottom: 30px; }
+        .features { display: flex; gap: 30px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0; margin-bottom: 30px; flex-wrap: wrap;}
+        .feature { text-align: center; }
+        .feature strong { display: block; font-size: 1.4rem; color: var(--primary-color); }
+        .feature span { font-size: 0.8rem; text-transform: uppercase; color: #888; }
+        .description h3 { color: var(--primary-color); margin-bottom: 15px; }
+        .description p { line-height: 1.8; color: #555; }
+
+        .sidebar { position: sticky; top: 120px; align-self: flex-start; }
+        .price-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border-top: 6px solid var(--primary-color); text-align: center; }
+        .price-tag { font-size: 2rem; font-weight: 800; color: var(--primary-color); display: block; margin-bottom: 5px; }
+        .price-label { color: #888; font-size: 0.9rem; margin-bottom: 30px; display: block; }
+
+        .btn-whatsapp-cta { width: 100%; padding: 18px; background: var(--whatsapp-green); color: white; border: none; border-radius: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; box-sizing: border-box; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.25); }
+        .btn-whatsapp-cta:hover { transform: translateY(-3px); background-color: #21bd5c; box-shadow: 0 12px 25px rgba(37, 211, 102, 0.35); }
+        .btn-whatsapp-cta svg { fill: white; width: 26px; height: 26px; }
+
+        footer { background: var(--primary-color); color: white; text-align: center; padding: 40px; margin-top: 60px; border-top: 4px solid var(--secondary-color); }
+
+        .error-message { grid-column: 1 / -1; text-align: center; padding: 100px 0; }
+        .error-message h2 { color: var(--primary-color); font-size: 2.5rem; }
+
+        @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } .sidebar { position: static; } }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header>
+        <div class="logo-container">
+            <a href="index.html" class="logo-link">
+                <img src="logo.jpg" alt="Logo">
+                <h1>INMOBILIARIA GASTIAZORO</h1>
+            </a>
+        </div>
+        <nav>
+            <a href="javascript:history.back()" style="color: white; text-decoration: none; font-weight: bold;">← VOLVER</a>
+        </nav>
+    </header>
+
+    <main class="main-container" id="mainContainer">
+        </main>
+
+    <footer class="reveal">
+        <p>San Martin 73 1° Piso | maxigastia@gmail.com | 3512315208</p>
+        <p>&copy; 2026 Inmobiliaria Gastiazoro. Especialistas en Alquileres.</p>
+    </footer>
+
+    <script src="propiedades.js"></script>
+
+    <script>
+        // Lenis & Cursor
+        const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+            outline.animate({ left: e.clientX + 'px', top: e.clientY + 'px' }, { duration: 400, fill: "forwards" });
+        });
+
+        // ---------------------------------------------------------
+        // LÓGICA DINÁMICA DE LA PROPIEDAD
+        // ---------------------------------------------------------
+        document.addEventListener("DOMContentLoaded", function() {
+            // Leer el ID de la URL (ejemplo: detalle-propiedad.html?id=2)
+            const urlParams = new URLSearchParams(window.location.search);
+            const propertyId = urlParams.get('id');
+
+            // Buscar la propiedad en nuestro archivo propiedades.js
+            const property = propiedades.find(p => p.id == propertyId);
+            const container = document.getElementById('mainContainer');
+
+            if (property) {
+                // Si la encuentra, dibuja todo el HTML con sus datos exactos
+                const mensajeRaw = `Hola Gastiazoro. Me interesa esta propiedad: ${property.titulo} (Ref: ${property.id}) por ${property.precio}. Quisiera coordinar una visita.`;
+                const whatsappUrl = `https://wa.me/5493512315208?text=${encodeURIComponent(mensajeRaw)}`;
+
+                container.innerHTML = `
+                    <div class="content">
+                        <div class="image-gallery reveal active">
+                            <img src="${property.imagen}" alt="${property.titulo}">
+                        </div>
+
+                        <div class="property-header reveal active" style="transition-delay: 0.1s;">
+                            <h2>${property.titulo}</h2>
+                            <div class="location">${property.ubicacion}</div>
+                        </div>
+
+                        <div class="features reveal active" style="transition-delay: 0.2s;">
+                            <div class="feature"><strong>${property.dormitorios}</strong><span>Dormitorios</span></div>
+                            <div class="feature"><strong>${property.banos}</strong><span>Baños</span></div>
+                            <div class="feature"><strong>${property.superficie}</strong><span>Superficie</span></div>
+                        </div>
+
+                        <div class="description reveal active" style="transition-delay: 0.3s;">
+                            <h3>Información del Inmueble</h3>
+                            <p>${property.descripcion}</p>
+                        </div>
+                    </div>
+
+                    <aside class="sidebar">
+                        <div class="price-card reveal active" style="transition-delay: 0.4s;">
+                            <span class="price-tag">${property.precio}</span>
+                            <span class="price-label">Sujeto a condiciones vigentes.</span>
+                            
+                            <a href="${whatsappUrl}" class="btn-whatsapp-cta" target="_blank">
+                                <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.89 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.743-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.01-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                                Coordinar Visita
+                            </a>
+                        </div>
+                    </aside>
+                `;
+            } else {
+                // Si alguien entra sin ID o pone un ID falso, le avisamos
+                container.innerHTML = `
+                    <div class="error-message reveal active">
+                        <h2>Propiedad no encontrada</h2>
+                        <p>Lo sentimos, el inmueble que buscas no existe o ya fue reservado.</p>
+                        <a href="propiedades.html" class="btn-whatsapp-cta" style="background:var(--primary-color); display:inline-block; margin-top:20px; width:auto; padding: 15px 30px;">Ver Catálogo Completo</a>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
