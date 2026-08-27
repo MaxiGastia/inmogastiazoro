@@ -6,14 +6,20 @@
     <title>Preguntas Frecuentes | Inmobiliaria Gastiazoro</title>
     <style>
         :root { --primary-color: #7C1616; --primary-light: #9A1F1F; --secondary-color: #E6B325; --bg-light: #fcfcfc; --text-dark: #333; }
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
         body, a, button { cursor: none !important; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; color: var(--text-dark); background-color: var(--bg-light); overflow-x: hidden; }
 
-        /* Cursor */
         .cursor-dot { width: 6px; height: 6px; background-color: var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
         .cursor-outline { width: 35px; height: 35px; border: 1px solid var(--secondary-color); position: fixed; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
 
-        /* --- Header Idéntico al resto de la web --- */
         header { background-color: var(--primary-color); color: white; padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.3); border-bottom: 2px solid var(--secondary-color); }
         .logo-link { display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; }
         .logo-link img { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary-color); }
@@ -26,7 +32,6 @@
         .btn-consultar { background-color: var(--secondary-color); color: var(--primary-color); padding: 10px 20px; font-weight: 800; border-radius: 4px; border: none; text-transform: uppercase; font-size: 0.8rem; cursor: none !important; transition: background-color 0.3s; }
         .btn-consultar:hover { background-color: white; }
 
-        /* --- FAQs --- */
         .faq-section { padding: 80px 5%; max-width: 800px; margin: 0 auto; min-height: 60vh; }
         .seccion-titulo { color: var(--primary-color); text-align: center; margin-bottom: 50px; font-size: 2.5rem; text-transform: uppercase; }
         .faq-item { border-bottom: 1px solid #ddd; margin-bottom: 10px; }
@@ -34,10 +39,21 @@
         .faq-answer { max-height: 0; overflow: hidden; transition: 0.3s; color: #555; line-height: 1.8; }
         .faq-item.active .faq-answer { max-height: 300px; padding-bottom: 20px; }
         
-        /* Footer básico para FAQs */
         footer { background-color: var(--primary-color); color: white; padding: 40px; text-align: center; margin-top: 50px; border-top: 4px solid var(--secondary-color); }
         
-        @media (max-width: 900px) { nav ul { display: none; } }
+        /* --- BOTÓN MENÚ HAMBURGUESA Y MOBILE CSS --- */
+        .menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 5px; z-index: 1001; }
+        .menu-toggle span { width: 30px; height: 3px; background-color: white; border-radius: 2px; transition: 0.3s; }
+
+        @media (max-width: 1024px) {
+            .menu-toggle { display: flex; }
+            nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background-color: var(--primary-color); padding: 20px 0; border-bottom: 3px solid var(--secondary-color); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+            nav ul.active { display: flex; }
+            nav ul li { margin-bottom: 15px; text-align: center; }
+            
+            .cursor-dot, .cursor-outline { display: none !important; }
+            body, a, button, select, input, label { cursor: auto !important; }
+        }
     </style>
 </head>
 <body>
@@ -50,8 +66,13 @@
                 <h1>INMOBILIARIA GASTIAZORO</h1>
             </a>
         </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span></span><span></span><span></span>
+        </div>
+
         <nav>
-            <ul>
+            <ul id="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="https://clasificados.lavoz.com.ar/sitio/inmogastiazoro" target="_blank">Propiedades</a></li>
@@ -92,6 +113,15 @@
         document.querySelectorAll('.faq-question').forEach(b => b.addEventListener('click', () => {
             b.parentElement.classList.toggle('active');
         }));
+
+        // Menú Hamburguesa Móvil
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+        if(menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
     </script>
 </body>
 </html>
